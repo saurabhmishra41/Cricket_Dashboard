@@ -3,8 +3,10 @@
         "WEB-INF\\src"
     ],
     "java.project.referencedLibraries": [
-        "c:\\Tomcat 9.0\\lib\\servlet-api.jar",
+        "c:\\Tomcat 9.0\\lib\\javax.json-api-1.1.2.jar",
+        "c:\\Tomcat 9.0\\lib\\javax.json-1.1.2.jar",
         "c:\\Tomcat 9.0\\lib\\commons-io-2.11.0.jar",
+        "c:\\Tomcat 9.0\\lib\\servlet-api.jar",
         "c:\\Tomcat 9.0\\lib\\commons-fileupload-1.4.jar"
     ]
 }
