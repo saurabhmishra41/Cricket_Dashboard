@@ -6,17 +6,11 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.io.DataOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.net.HttpURLConnection;
-import java.net.URL;
-
-import javax.json.Json;
-import javax.json.JsonObject;
-import javax.json.JsonReader;
 
 import models.User;
+import utils.AppUtil;
+import utils.EmailSending;
 
 @WebServlet("/register.do")
 public class signUpServlet extends HttpServlet {
@@ -27,37 +21,10 @@ public class signUpServlet extends HttpServlet {
 
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
 
-        String SECRET_KEY = "6LfGC44rAAAAAP6TEJRWGeAcFZvF-OU2U2UWBhXg";
-
         String gRecaptchaResponse = request.getParameter("g-recaptcha-response");
-
-        String uri = "https://www.google.com/recaptcha/api/siteverify";
-
-        String params = "secret=" + SECRET_KEY + "&response=" + gRecaptchaResponse;
-
-        URL url = new URL(uri);
-
-        HttpURLConnection connection = (HttpURLConnection) url.openConnection();
-
-        connection.setRequestMethod("POST");
-        connection.setDoOutput(true);
-        connection.connect();
-
-        DataOutputStream dos = new DataOutputStream(connection.getOutputStream());
-
-        dos.writeBytes(params);
-        dos.flush();
-        dos.close();
-
-        InputStream is = connection.getInputStream();
-
-        JsonReader jr = Json.createReader(is);
-
-        JsonObject jo = jr.readObject();
-
-        jr.close();
-
-        boolean success = jo.getBoolean("success");
+        
+        boolean success=AppUtil.checkRecaptchaResponse(gRecaptchaResponse);
+        
 
         if (success) {
 
@@ -67,6 +34,8 @@ public class signUpServlet extends HttpServlet {
 
             User user = new User(name, email, password);
             user.save();
+
+            EmailSending.sendRegistrationEmail(email,name);
 
             response.sendRedirect("signin.jsp");
 

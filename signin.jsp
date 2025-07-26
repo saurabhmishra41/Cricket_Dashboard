@@ -20,6 +20,9 @@
             <input type="password" id="pass" name="upass">
         </div>
 
+        <a href="forget_password.do">Forget password</a>
+        
+
         <% 
             String error = (String) request.getAttribute("errormsg"); 
              if ("Eerror".equals(error)) { 
@@ -30,7 +33,7 @@
             } else if ("Perror".equals(error)) { 
         %>
             <div style="color: red;">Incorrect password!</div>
-            <a href="forget.do">Forget password</a>
+            
         <% 
             } 
         %>   
