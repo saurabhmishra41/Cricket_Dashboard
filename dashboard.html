@@ -4,51 +4,393 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="stylesheet" href="dashboard.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css">
+  <title>Cricket Score Calculator</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
 
-<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/css/bootstrap.min.css">
-  <title>dashboard!</title>
-  <script src="ajax.js"></script>
+    body {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      color: #333;
+    }
+
+    .app-header {
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(10px);
+      border-radius: 15px;
+      margin: 20px;
+      border: 1px solid rgba(255, 255, 255, 0.2);
+    }
+
+    .main-title {
+      color: white;
+      font-weight: 700;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+      margin-bottom: 10px;
+    }
+
+    .sub-title {
+      color: rgba(255, 255, 255, 0.9);
+      font-size: 1.1rem;
+      margin-bottom: 0;
+    }
+
+    .score {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      margin: 20px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .left .tr {
+      display: flex;
+      gap: 15px;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .left .tr span:first-child {
+      background: #28a745;
+      color: white;
+      padding: 8px 15px;
+      border-radius: 25px;
+      font-weight: 600;
+      font-size: 1.1rem;
+    }
+
+    .left .tr span:last-child {
+      background: #f8f9fa;
+      padding: 8px 15px;
+      border-radius: 25px;
+      color: #6c757d;
+      font-weight: 500;
+    }
+
+    .runcal {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: 'Courier New', monospace;
+    }
+
+    .runcal h1 {
+      font-size: 3rem;
+      font-weight: 700;
+      color: #28a745;
+      margin: 0;
+    }
+
+    .runcal h3 {
+      font-size: 2rem;
+      color: #6c757d;
+      margin: 0;
+    }
+
+    .right {
+      text-align: center;
+    }
+
+    .crr {
+      background: #17a2b8;
+      color: white;
+      padding: 8px 20px;
+      border-radius: 25px;
+      font-weight: 600;
+      margin-bottom: 15px;
+    }
+
+    .rr {
+      font-size: 2rem;
+      font-weight: 700;
+      color: #17a2b8;
+      font-family: 'Courier New', monospace;
+    }
+
+    .scorecard {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      margin: 20px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      display: grid;
+      grid-template-columns: 2fr 1fr 1fr 1fr 1fr 1fr;
+      gap: 20px;
+      align-items: start;
+    }
+
+    .scorecard > div {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .scorecard p {
+      margin: 0;
+      padding: 8px 12px;
+      border-radius: 8px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .scorecard p[style*="gray"] {
+      background: #f8f9fa;
+      font-weight: 700 !important;
+      color: #6c757d !important;
+      border: 2px solid #e9ecef;
+    }
+
+    .scorecard p:not([style*="gray"]) {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      font-weight: 600;
+    }
+
+    .thisover {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      margin: 20px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .thisover h3 {
+      color: #333;
+      margin-bottom: 15px;
+    }
+
+    .this-over {
+      display: inline-block;
+      background: #6c757d;
+      color: white;
+      padding: 8px 12px;
+      margin: 5px;
+      border-radius: 50%;
+      font-weight: 600;
+      min-width: 40px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .four-run {
+      background: #28a745 !important;
+      animation: pulse 0.5s ease-in-out;
+    }
+
+    .six-run {
+      background: #dc3545 !important;
+      animation: bounce 0.5s ease-in-out;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    .extraball {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      margin: 20px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .exup {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .form-check {
+      background: #f8f9fa;
+      padding: 12px 20px;
+      border-radius: 25px;
+      border: 2px solid #e9ecef;
+      transition: all 0.3s ease;
+    }
+
+    .form-check:hover {
+      background: #e9ecef;
+      border-color: #667eea;
+    }
+
+    .form-check-input:checked {
+      background-color: #667eea;
+      border-color: #667eea;
+    }
+
+    .exlow {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .runs {
+      background: rgba(255, 255, 255, 0.95);
+      border-radius: 20px;
+      margin: 20px;
+      padding: 25px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      display: flex;
+      gap: 30px;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .runs1 {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .runs2 {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .upcontai, .lowcontai {
+      display: flex;
+      gap: 15px;
+    }
+
+    .rbtn {
+      width: 60px;
+      height: 60px;
+      border: none;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+      color: white;
+      font-size: 1.5rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 5px 15px rgba(40, 167, 69, 0.3);
+    }
+
+    .rbtn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 8px 25px rgba(40, 167, 69, 0.4);
+    }
+
+    .rbtn:active {
+      transform: translateY(-1px);
+    }
+
+    .modal-content {
+      border-radius: 20px;
+      border: none;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal-header {
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border-radius: 20px 20px 0 0;
+    }
+
+    .btn-close {
+      filter: invert(1);
+    }
+
+    .btn {
+      border-radius: 25px;
+      font-weight: 600;
+      padding: 10px 25px;
+      transition: all 0.3s ease;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    #model-btn {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      z-index: 1000;
+      border-radius: 50px;
+      padding: 12px 25px;
+    }
+
+    @media (max-width: 768px) {
+      .scorecard {
+        grid-template-columns: 1fr 1fr 1fr;
+        gap: 15px;
+      }
+      
+      .runs {
+        flex-direction: column;
+        gap: 20px;
+      }
+      
+      .runs1 {
+        flex-direction: row;
+        justify-content: center;
+      }
+      
+      .score {
+        flex-direction: column;
+        gap: 20px;
+        text-align: center;
+      }
+      
+      .runcal h1 {
+        font-size: 2.5rem;
+      }
+    }
+  </style>
 </head>
 
 <body class="body">
 
-  <!-- ##############        bootstrap start   ####################  -->
+  <!-- Button trigger modal -->
+  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="model-btn">
+    ⚙️ Settings
+  </button>
 
-<!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" id="model-btn">
-  Launch demo modal
-</button>
-
-<!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        ...
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Save changes</button>
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">Match Settings</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="teamName" class="form-label">Team Name</label>
+            <input type="text" class="form-control" id="teamName" placeholder="Enter team name">
+          </div>
+          <div class="mb-3">
+            <label for="overs" class="form-label">Total Overs</label>
+            <input type="number" class="form-control" id="overs" placeholder="20">
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          <button type="button" class="btn btn-primary">Save changes</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
-
-
-
-  <!-- ##############        bootstrap end   ####################  -->
-
-
-
-
-
-
-
 
   <header class="app-header py-3">
     <div class="container text-center">
@@ -59,7 +401,6 @@
 
   <div class="score my-3">
     <div class="left">
-
       <div class="tr">
         <span>A</span>
         <span>1st inning</span>
@@ -73,19 +414,15 @@
         <p style="color: gray;" id="t-over">0.0</p>
         <p style="color: gray;">)</p>
       </div>
-
     </div>
     <div class="right">
-
       <div class="crr"><span>CRR</span></div>
       <br>
       <div class="rr"><span id="t-rr">0.00</span></div>
-
     </div>
-
   </div>
-  <div class="scorecard my-3">
 
+  <div class="scorecard my-3">
     <div class="name">
       <p style="font-weight: 700; color: gray;">Batsman</p>
       <p id="stBatsmanName">STBat_name</p>
@@ -128,70 +465,58 @@
       <p style="font-weight: 700; color: gray;">ER</p>
       <p id="bow-ER">0</p>
     </div>
-
   </div>
-  <div class="bowler"></div>
 
-  </div>
   <div class="thisover my-3" id="this-over">
-    <h3>this over:</h3>
+    <h3>This Over:</h3>
   </div>
-  <br>
-  <div class="extraball my-3">
 
+  <div class="extraball my-3">
     <div class="exup">
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-        <label class="form-check-label" for="flexCheckDefault">
-          wide
+        <input class="form-check-input" type="checkbox" value="" id="wideCheck">
+        <label class="form-check-label" for="wideCheck">
+          Wide
         </label>
       </div>
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="" id="flexCheckChecked" checked>
-        <label class="form-check-label" for="flexCheckChecked">
+        <input class="form-check-input" type="checkbox" value="" id="noBallCheck">
+        <label class="form-check-label" for="noBallCheck">
           No Ball
         </label>
       </div>
-
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-        <label class="form-check-label" for="flexCheckDefault">
+        <input class="form-check-input" type="checkbox" value="" id="byesCheck">
+        <label class="form-check-label" for="byesCheck">
           Byes
         </label>
       </div>
-
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-        <label class="form-check-label" for="flexCheckDefault">
+        <input class="form-check-input" type="checkbox" value="" id="legByesCheck">
+        <label class="form-check-label" for="legByesCheck">
           Leg Byes
         </label>
       </div>
-
       <div class="form-check">
-        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-        <label class="form-check-label" for="flexCheckDefault">
-          wicket
+        <input class="form-check-input" type="checkbox" value="" id="wicketCheck">
+        <label class="form-check-label" for="wicketCheck">
+          Wicket
         </label>
       </div>
-
     </div>
-  </div>
 
-  <div class="exlow">
-
-    <button type="button" class="btn btn-outline-primary mx-3">Retire</button>
-    <button type="button" class="btn btn-outline-primary">Swap Batsman</button>
+    <div class="exlow">
+      <button type="button" class="btn btn-outline-primary mx-3" id="retireBtn">Retire</button>
+      <button type="button" class="btn btn-outline-primary" id="swapBtn">Swap Batsman</button>
+    </div>
   </div>
 
   <!-- runs new div  -->
   <div class="runs">
     <div class="runs1 mx-3">
-      <button type="button" class="btn btn-success my-2"
-        style="border: 2px solid transparent; border-radius: 10px;">Undo</button>
-      <button type="button" class="btn btn-success  my-2"
-        style="border: 2px solid transparent; border-radius: 10px;">Partnership</button>
-      <button type="button" class="btn btn-success  my-2"
-        style="border: 2px solid transparent; border-radius: 10px;">Extras</button>
+      <button type="button" class="btn btn-success my-2" style="border: 2px solid transparent; border-radius: 25px;" id="undoBtn">Undo</button>
+      <button type="button" class="btn btn-success my-2" style="border: 2px solid transparent; border-radius: 25px;" id="partnershipBtn">Partnership</button>
+      <button type="button" class="btn btn-success my-2" style="border: 2px solid transparent; border-radius: 25px;" id="extrasBtn">Extras</button>
     </div>
     <div class="runs2">
       <div class="upcontai">
@@ -200,21 +525,505 @@
         <button class="rbtn">2</button>
         <button class="rbtn">3</button>
       </div>
-
-
       <div class="lowcontai">
         <button class="rbtn">4</button>
         <button class="rbtn">5</button>
         <button class="rbtn">6</button>
         <button class="rbtn">...</button>
       </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></script>
+  <script>
+
+let stBatsmanName = localStorage.getItem("index2-striker");
+let nstBatsmanName = localStorage.getItem("index2-nstriker");
+let bowler = localStorage.getItem("index2-bowler");
+let runbtns = document.querySelectorAll(".rbtn");
+let truns = document.querySelector("#t-run");
+let tovers = document.querySelector("#t-over")
+let trr = document.querySelector("#t-rr");
 
 
-      
+let stbat = document.querySelector("#stBatsmanName");
+let nstbat = document.querySelector("#nstBatsmanName");
+let bow = document.querySelector("#bow");
+const modelBtn=document.querySelector("#model-btn");
+
+// Extra options elements
+const wideCheck = document.querySelector("#wideCheck");
+const noBallCheck = document.querySelector("#noBallCheck");
+const byesCheck = document.querySelector("#byesCheck");
+const legByesCheck = document.querySelector("#legByesCheck");
+const wicketCheck = document.querySelector("#wicketCheck");
+const retireBtn = document.querySelector("#retireBtn");
+const swapBtn = document.querySelector("#swapBtn");
+const undoBtn = document.querySelector("#undoBtn");
+const partnershipBtn = document.querySelector("#partnershipBtn");
+const extrasBtn = document.querySelector("#extrasBtn");
 
 
-      <script src="dashboard.js"></script>
-      <Script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.6/dist/js/bootstrap.bundle.min.js"></Script>
+stbat.innerHTML = stBatsmanName;
+nstbat.innerHTML = nstBatsmanName;
+bow.innerHTML = bowler;
+
+
+// For striker batsman 
+let run = document.querySelector("#sRun");
+let ball = document.querySelector("#sBall");
+let fours = document.querySelector("#s4s");
+let sixes = document.querySelector("#s6s");
+let SR = document.querySelector("#sSR");
+
+
+// for Non Striker 
+let nrun = document.querySelector("#nSRun");
+let nball = document.querySelector("#nsBall");
+let nfours = document.querySelector("#ns4s");
+let nsixes = document.querySelector("#ns6s");
+let nSR = document.querySelector("#nsSR");
+
+//  for Bowler 
+
+let bowOvers = document.querySelector("#bow-over")
+let bowMdn = document.querySelector("#bow-mdn")
+let bowRun = document.querySelector("#bow-run")
+let bowWct = document.querySelector("#bow-wct")
+let bowER = document.querySelector("#bow-ER")
+
+
+
+
+
+const Bowler = {
+    over: 0.0,
+    M: 0,
+    R: 0,
+    W: 0,
+    ER: 0.0
+}
+
+
+
+const striker = createPlayer();
+const nstriker = createPlayer();
+function createPlayer() {
+    return {
+        run: 0,
+        ball: 0,
+        fours: 0,
+        sixes: 0,
+        SR: 0.0
+    };
+}
+
+
+let f = 0;
+
+function ballsToOvers(balls) {
+    const fullOvers = Math.floor(balls / 6);
+    const remainingBalls = balls % 6;
+    const totalOvers = fullOvers + remainingBalls / 10;
+
+    return totalOvers.toFixed(1);
+}
+
+
+function thisOver(btnval) {
+    let newElement = document.createElement("span");
+    const thisElement = document.querySelector("#this-over");
+    newElement.innerText = btnval;
+
+    newElement.classList.add("this-over");
+    if (btnval === 4) {
+        console.log("triggers")
+        newElement.classList.add("four-run");
+    }
+
+    if (btnval === 6) {
+        newElement.classList.add("six-run");
+    }
+    thisElement.appendChild(newElement);
+}
+
+let total_run = 0;
+let balls = 0;
+let tballs = 0;
+
+// Undo functionality - store last action
+let lastAction = {
+    total_run: 0,
+    tballs: 0,
+    balls: 0,
+    striker: {...createPlayer()},
+    nstriker: {...createPlayer()},
+    bowler: {...Bowler},
+    f: 0,
+    lastOverElement: null
+};
+
+// Partnership tracking
+let partnershipRuns = 0;
+let partnershipBalls = 0;
+
+// Extras tracking
+let totalExtras = 0;
+
+
+
+runbtns.forEach(button => {
+    button.addEventListener("click", () => {
+        // Store current state for undo
+        lastAction = {
+            total_run: total_run,
+            tballs: tballs,
+            balls: balls,
+            striker: {...striker},
+            nstriker: {...nstriker},
+            bowler: {...Bowler},
+            f: f,
+            lastOverElement: document.querySelector("#this-over").lastElementChild
+        };
+        
+        let btnval = Number(button.innerText.trim());
+        
+        // Check extra options
+        let isWide = wideCheck.checked;
+        let isNoBall = noBallCheck.checked;
+        let isByes = byesCheck.checked;
+        let isLegByes = legByesCheck.checked;
+        let isWicket = wicketCheck.checked;
+        
+        let extraRuns = 0;
+        let ballCount = true; // whether to count this as a legal ball
+        let batsmanRuns = btnval; // runs to be added to batsman
+        
+        // Handle Wide
+        if (isWide) {
+            extraRuns += 1;
+            ballCount = false;
+            batsmanRuns = 0; // no runs to batsman on wide
+            thisOver("WD" + (btnval > 0 ? "+" + btnval : ""));
+            totalExtras += 1 + btnval;
+        }
+        
+        // Handle No Ball
+        if (isNoBall) {
+            extraRuns += 1;
+            ballCount = false;
+            thisOver("NB" + (btnval > 0 ? "+" + btnval : ""));
+            totalExtras += 1 + btnval;
+        }
+        
+        // Handle Byes
+        if (isByes) {
+            batsmanRuns = 0; // no runs to batsman
+            if (!isWide && !isNoBall) {
+                thisOver("B" + btnval);
+                totalExtras += btnval;
+            }
+        }
+        
+        // Handle Leg Byes  
+        if (isLegByes) {
+            batsmanRuns = 0; // no runs to batsman
+            if (!isWide && !isNoBall) {
+                thisOver("LB" + btnval);
+                totalExtras += btnval;
+            }
+        }
+        
+        // Handle Wicket
+        if (isWicket) {
+            Bowler.W += 1;
+            bowWct.innerText = Bowler.W;
+            if (!isWide && !isNoBall && !isByes && !isLegByes) {
+                thisOver("W");
+            }
+            // Reset partnership when wicket falls
+            partnershipRuns = 0;
+            partnershipBalls = 0;
+        }
+
+        // total runs 
+        total_run += btnval + extraRuns;
+        truns.innerText = total_run;
+
+        // Update partnership
+        if (!isWicket) {
+            partnershipRuns += btnval + extraRuns;
+            if (ballCount) {
+                partnershipBalls++;
+            }
+        }
+
+        // total overs (only if it's a legal ball)
+        if (ballCount) {
+            tovers.innerText = ballsToOvers(++tballs);
+        }
+        
+        trr.innerText = tballs > 0 ? (total_run / (tballs/6)).toFixed(2) : "0.00";
+
+        // Bowler part 
+        Bowler.R += btnval + extraRuns;
+        bowRun.innerText = Bowler.R;
+
+        console.log(Bowler.over)
+
+        if (ballCount) {
+            bowOvers.innerText = Bowler.over = ballsToOvers(++balls);
+        }
+
+        if (balls > 0) {
+            bowER.innerText = ((Bowler.R / balls) * 6).toFixed(2);
+        }
+
+        //##################      Bowler data save     ###################
+
+        if(tballs%6==0){
+            
+        }
+
+        // Add to this over display (only if not already added by extras)
+        if (!isWide && !isNoBall && !isByes && !isLegByes && !isWicket) {
+            thisOver(btnval);
+        }
+
+        // Batsman part (only if not wicket)
+        if (!isWicket) {
+            if (f === 0) {
+                if (btnval === 4 && batsmanRuns > 0) {
+                    ++striker.fours;
+                    fours.innerText = striker.fours;
+                }
+
+                if (btnval === 6 && batsmanRuns > 0) {
+                    ++striker.sixes;
+                    sixes.innerText = striker.sixes;
+                }
+
+                striker.run += batsmanRuns;
+                run.innerText = striker.run;
+                
+                if (ballCount) {
+                    ball.innerText = ++striker.ball;
+                }
+                
+                if (striker.ball > 0) {
+                    SR.innerText = Math.round((100 * striker.run) / striker.ball);
+                }
+
+                if (btnval % 2 != 0) {
+                    f = 1;
+                }
+            }
+            else if (f === 1) {
+                nstriker.run += batsmanRuns;
+                if (btnval === 4 && batsmanRuns > 0) {
+                    ++nstriker.fours;
+                    nfours.innerText = nstriker.fours;
+                }
+
+                if (btnval === 6 && batsmanRuns > 0) {
+                    ++nstriker.sixes;
+                    nsixes.innerText = nstriker.sixes;
+                }
+
+                nrun.innerText = nstriker.run;
+                
+                if (ballCount) {
+                    nball.innerText = ++nstriker.ball;
+                }
+                
+                if (nstriker.ball > 0) {
+                    nSR.innerText = Math.round((100 * nstriker.run) / nstriker.ball);
+                }
+                
+                if (btnval % 2 != 0) {
+                    f = 0;
+                }
+            }
+        }
+        
+        // Uncheck all checkboxes after processing
+        wideCheck.checked = false;
+        noBallCheck.checked = false;
+        byesCheck.checked = false;
+        legByesCheck.checked = false;
+        wicketCheck.checked = false;
+    })
+})
+
+// Retire button functionality
+retireBtn.addEventListener("click", () => {
+    if (f === 0) {
+        // Retire striker
+        alert(`${stBatsmanName} retired hurt`);
+        // Reset striker stats
+        striker.run = 0;
+        striker.ball = 0;
+        striker.fours = 0;
+        striker.sixes = 0;
+        striker.SR = 0;
+        
+        // Update display
+        run.innerText = 0;
+        ball.innerText = 0;
+        fours.innerText = 0;
+        sixes.innerText = 0;
+        SR.innerText = 0;
+    } else {
+        // Retire non-striker
+        alert(`${nstBatsmanName} retired hurt`);
+        // Reset non-striker stats
+        nstriker.run = 0;
+        nstriker.ball = 0;
+        nstriker.fours = 0;
+        nstriker.sixes = 0;
+        nstriker.SR = 0;
+        
+        // Update display
+        nrun.innerText = 0;
+        nball.innerText = 0;
+        nfours.innerText = 0;
+        nsixes.innerText = 0;
+        nSR.innerText = 0;
+    }
+});
+
+// Swap batsman functionality
+swapBtn.addEventListener("click", () => {
+    // Swap the flag
+    f = f === 0 ? 1 : 0;
+    
+    // Swap names in display
+    let tempName = stbat.innerHTML;
+    stbat.innerHTML = nstbat.innerHTML;
+    nstbat.innerHTML = tempName;
+    
+    // Swap stats in display
+    let tempRun = run.innerText;
+    run.innerText = nrun.innerText;
+    nrun.innerText = tempRun;
+    
+    let tempBall = ball.innerText;
+    ball.innerText = nball.innerText;
+    nball.innerText = tempBall;
+    
+    let tempFours = fours.innerText;
+    fours.innerText = nfours.innerText;
+    nfours.innerText = tempFours;
+    
+    let tempSixes = sixes.innerText;
+    sixes.innerText = nsixes.innerText;
+    nsixes.innerText = tempSixes;
+    
+    let tempSR = SR.innerText;
+    SR.innerText = nSR.innerText;
+    nSR.innerText = tempSR;
+    
+    // Swap actual data objects
+    let tempStriker = {...striker};
+    Object.assign(striker, nstriker);
+    Object.assign(nstriker, tempStriker);
+    
+    alert("Batsmen swapped!");
+});
+
+// Undo button functionality
+undoBtn.addEventListener("click", () => {
+    if (lastAction.total_run !== undefined) {
+        // Restore previous state
+        total_run = lastAction.total_run;
+        tballs = lastAction.tballs;
+        balls = lastAction.balls;
+        f = lastAction.f;
+        
+        // Restore objects
+        Object.assign(striker, lastAction.striker);
+        Object.assign(nstriker, lastAction.nstriker);
+        Object.assign(Bowler, lastAction.bowler);
+        
+        // Update display
+        truns.innerText = total_run;
+        tovers.innerText = ballsToOvers(tballs);
+        trr.innerText = tballs > 0 ? (total_run / (tballs/6)).toFixed(2) : "0.00";
+        
+        // Bowler display
+        bowOvers.innerText = ballsToOvers(balls);
+        bowRun.innerText = Bowler.R;
+        bowWct.innerText = Bowler.W;
+        bowER.innerText = balls > 0 ? ((Bowler.R / balls) * 6).toFixed(2) : "0.00";
+        
+        // Striker display
+        run.innerText = striker.run;
+        ball.innerText = striker.ball;
+        fours.innerText = striker.fours;
+        sixes.innerText = striker.sixes;
+        SR.innerText = striker.ball > 0 ? Math.round((100 * striker.run) / striker.ball) : 0;
+        
+        // Non-striker display
+        nrun.innerText = nstriker.run;
+        nball.innerText = nstriker.ball;
+        nfours.innerText = nstriker.fours;
+        nsixes.innerText = nstriker.sixes;
+        nSR.innerText = nstriker.ball > 0 ? Math.round((100 * nstriker.run) / nstriker.ball) : 0;
+        
+        // Remove last element from this over
+        const thisOverElement = document.querySelector("#this-over");
+        if (thisOverElement.lastElementChild && thisOverElement.lastElementChild.classList.contains("this-over")) {
+            thisOverElement.removeChild(thisOverElement.lastElementChild);
+        }
+        
+        alert("Last action undone!");
+    } else {
+        alert("Nothing to undo!");
+    }
+});
+
+// Partnership button functionality
+partnershipBtn.addEventListener("click", () => {
+    const strikerName = stbat.innerHTML;
+    const nonStrikerName = nstbat.innerHTML;
+    const strikerRuns = striker.run;
+    const nonStrikerRuns = nstriker.run;
+    const partnershipOvers = ballsToOvers(partnershipBalls);
+    const partnershipRate = partnershipBalls > 0 ? ((partnershipRuns / partnershipBalls) * 6).toFixed(2) : "0.00";
+    
+    const partnershipInfo = `
+🏏 CURRENT PARTNERSHIP 🏏
+
+${strikerName}: ${strikerRuns} runs (${striker.ball} balls)
+${nonStrikerName}: ${nonStrikerRuns} runs (${nstriker.ball} balls)
+
+Partnership: ${partnershipRuns} runs in ${partnershipOvers} overs
+Run Rate: ${partnershipRate} per over
+    `;
+    
+    alert(partnershipInfo);
+});
+
+// Extras button functionality
+extrasBtn.addEventListener("click", () => {
+    const extrasInfo = `
+📊 EXTRAS SUMMARY 📊
+
+Total Extras: ${totalExtras} runs
+
+Breakdown:
+• Wides: Included in total
+• No Balls: Included in total  
+• Byes: Included in total
+• Leg Byes: Included in total
+
+Note: Extras are automatically tracked when you select the checkboxes and score runs.
+    `;
+    
+    alert(extrasInfo);
+});
+
+  </script>
 </body>
 
 </html>

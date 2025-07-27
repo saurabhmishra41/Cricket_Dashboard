@@ -44,7 +44,7 @@ public class SignInServlet extends HttpServlet{
 
       else{
         System.out.println("successful");
-        response.sendRedirect("Fronts.html");
+        response.sendRedirect("Fronts.jsp");
       }
 
 

@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Verify OTP</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
     body {
       margin: 0;
@@ -51,11 +52,11 @@
 </head>
 <body>
   <div class="container">
-    <h2>Verify OTP</h2>
+    <h2><i class="fas fa-shield-alt"></i> Verify OTP</h2>
     <form action="forget_password.do" method="post">
-      <label for="otp">Enter 4-digit OTP:</label>
+      <label for="otp"><i class="fas fa-key"></i> Enter 4-digit OTP:</label>
       <input type="text" name="otp" id="otp" maxlength="4" required />
-      <button type="submit">Verify</button>
+      <button type="submit"><i class="fas fa-check"></i> Verify</button>
     </form>
   </div>
 </body>
