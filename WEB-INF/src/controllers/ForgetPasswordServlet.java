@@ -34,7 +34,6 @@ public class ForgetPasswordServlet extends HttpServlet {
             flag= false;
         }
 
-        System.out.println("flag is: "+flag);
 
         if (flag) {
             String email = request.getParameter("email");
@@ -42,7 +41,8 @@ public class ForgetPasswordServlet extends HttpServlet {
 
             HttpSession session = request.getSession();
             session.setAttribute("rNo", rNo);
-            session.setMaxInactiveInterval(60);
+            session.setAttribute("email", email);
+            session.setMaxInactiveInterval(120);
 
             EmailSending.sendForgetPasswordEmail(email, rNo);
             response.sendRedirect("verify_otp.jsp");
@@ -52,14 +52,15 @@ public class ForgetPasswordServlet extends HttpServlet {
         }
 
         else {
+            System.out.println("triggerd else part");
             HttpSession session = request.getSession();
             String otp = request.getParameter("otp");
             String rNo = session.getAttribute("rNo").toString();
             if (rNo.equals(otp)) {
-                nextPage = "signin.jsp";
+                nextPage = "new_password.jsp";
             }
         }
-
+        System.out.println("next page is : "+ nextPage);
         response.sendRedirect(nextPage);
 
     }

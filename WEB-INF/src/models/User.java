@@ -57,6 +57,25 @@ public class User {
     }
 
 
+    public void updatePassword() {
+        try{
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection("jdbc:mysql://localhost:3306/crickdb?user=root&password=root");
+
+            String query = "update users set password=? where email=?";
+
+            PreparedStatement ps = con.prepareStatement(query);
+
+            ps.setString(1, password);
+            ps.setString(2, email);
+
+            ps.executeUpdate();
+            con.close();
+        }catch(SQLException | ClassNotFoundException e){
+            e.printStackTrace();
+        }
+    }
     public Integer verify()
     {
       try{
